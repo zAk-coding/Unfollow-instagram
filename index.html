@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unfollow Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container" id="appContainer">
+        <header class="header">
+            <div class="header-top">
+                <div class="logo-icon">
+                    <i class="fas fa-users-slash"></i>
+                </div>
+                <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <h1>Unfollow <span>Tracker</span></h1>
+            <p>Instagram Unfollow Analysis Tool</p>
+        </header>
+        <div class="extraction-modes">
+            <button class="mode-btn active" id="modeKnown" data-mode="known">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M5.3 18.3C6.8 16.5 9.2 15 12 15s5.2 1.5 6.7 3.3"/>
+                    <circle cx="18" cy="6" r="2"/>
+                    <circle cx="6" cy="6" r="2"/>
+                    <path d="M2 12c0-2.2 1.8-4 4-4"/>
+                    <path d="M22 12c0-2.2-1.8-4-4-4"/>
+                </svg>
+                <span>Mostrar apenas pessoas próximas</span>
+                <span class="info-icon" data-tooltip="Mostra apenas conexões mais próximas, removendo empresas, famosos e perfis populares.">
+                    <i class="fas fa-info-circle"></i>
+                </span>
+            </button>
+            <button class="mode-btn" id="modeAll" data-mode="all">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M5.3 18.3C6.8 16.5 9.2 15 12 15s5.2 1.5 6.7 3.3"/>
+                    <circle cx="18" cy="6" r="2"/>
+                    <circle cx="6" cy="6" r="2"/>
+                    <path d="M2 12c0-2.2 1.8-4 4-4"/>
+                    <path d="M22 12c0-2.2-1.8-4-4-4"/>
+                    <circle cx="12" cy="20" r="2"/>
+                </svg>
+                <span>Extrair todos</span>
+                <span class="info-icon" data-tooltip="Coleta completa da sua rede, sem filtros ou exclusões.">
+                    <i class="fas fa-info-circle"></i>
+                </span>
+            </button>
+        </div>
+        <div class="search-wrapper">
+            <span class="input-icon">
+                <i class="fas fa-search"></i>
+            </span>
+            <input 
+                type="text" 
+                id="usernameInput" 
+                placeholder="Enter Instagram username (ex: instagram)"
+                autocomplete="off"
+            />
+            <button id="searchBtn">
+                <i class="fas fa-eye"></i>
+                View Unfollow
+            </button>
+        </div>
+        <div class="error-message" id="errorMessage"></div>
+        <div class="progress-container" id="progressContainer">
+            <div class="status-wrapper">
+                <span class="status-text" id="statusText">Analyzing profile...</span>
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-info">
+                <span id="progressLabel">Starting...</span>
+                <span class="percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="estimated-time" id="estimatedTime">
+                ⏱ Estimated time: <span class="time-value" id="timeValue">0s</span>
+            </div>
+            <div class="large-profile-warning" id="largeProfileWarning">
+                <i class="fas fa-clock"></i>
+                If you have a lot of followers, this may take a while.
+            </div>
+        </div>
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="stat-value" id="totalFollowing">0</div>
+                <div class="stat-label">Following</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <div class="stat-value" id="totalFollowers">0</div>
+                <div class="stat-label">Followers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon gray">
+                    <i class="fas fa-user-slash"></i>
+                </div>
+                <div class="stat-value" id="totalUnfollowers">0</div>
+                <div class="stat-label">Not Following Back</div>
+            </div>
+        </div>
+        <section class="results-section" id="resultsSection">
+            <div class="results-header">
+                <div class="title-group">
+                    <i class="fas fa-user-slash"></i>
+                    <h2>Users Not Following Back</h2>
+                </div>
+                <span class="count-badge" id="resultCount">0</span>
+            </div>
+            <div class="search-filter-wrapper" id="filterWrapper" style="display:none;">
+                <span class="filter-icon">
+                    <i class="fas fa-filter"></i>
+                </span>
+                <input 
+                    type="text" 
+                    id="filterInput" 
+                    placeholder="🔍 Filter by username or name..."
+                    autocomplete="off"
+                />
+                <button class="clear-filter-btn" id="clearFilterBtn" style="display:none;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="user-list" id="userList"></div>
+        </section>
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon">
+                <i class="fas fa-smile-wink"></i>
+            </div>
+            <h3>Everyone is following you back!</h3>
+            <p>No unfollowers found</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

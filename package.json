@@ -1,0 +1,20 @@
+{
+  "name": "unfollow-tracker",
+  "version": "1.0.0",
+  "description": "Instagram Unfollow Tracker - Local Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "instagram",
+    "unfollow",
+    "tracker"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
