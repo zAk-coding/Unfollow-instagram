@@ -71,18 +71,17 @@ function showApiKeyRequired() {
                 cursor: pointer;
                 transition: all 0.3s ease;
             ">
-                🔄 Try Again
+                Try Again
             </button>
         </div>
     `;
     document.body.appendChild(overlay);
 }
-// ============================================
-// FUNÇÃO PARA VERIFICAR API KEY (ATUALIZADA)
-// ============================================
+
 async function verifyApiKey() {
     if (isKeyBlocked) {
-        // Verifica se o bloqueio expirou
+      // Esta mensagem é da API. Se removida, você não será avisado caso ela bloqueie seu acesso.
+
         const now = Date.now();
         if (blockTimer && blockTimer > now) {
             const remaining = Math.ceil((blockTimer - now) / 1000);
@@ -97,23 +96,23 @@ async function verifyApiKey() {
     if (isApiKeyVerified) return isApiKeyValid;
     
     if (!API_KEY) {
-        showError('❌ API Key not configured. Edit config.js file.');
+        showError(' API Key not configured. Edit config.js file.');
         showApiKeyRequired();
         return false;
     }
     
     if (!API_BASE_URL) {
-        showError('❌ Server URL not configured.');
+        showError(' Server URL not configured.');
         return false;
     }
 
     if (API_KEY.length < 8) {
-        showError('❌ Key too short.');
+        showError(' Key too short.');
         return false;
     }
 
     if (!/^[a-zA-Z0-9\-_]+$/.test(API_KEY)) {
-        showError('❌ Invalid characters in key.');
+        showError(' Invalid characters in key.');
         return false;
     }
     
@@ -145,9 +144,7 @@ async function verifyApiKey() {
         
         isApiKeyVerified = true;
         
-        // ============================================
-        // TRATAMENTO DE RATE LIMIT
-        // ============================================
+       
         if (response.status === 429) {
             const errorMsg = data.error || 'Too many attempts. Please wait.';
             const remaining = data.remaining_seconds || 20;
@@ -175,14 +172,14 @@ async function verifyApiKey() {
             const attemptsRemaining = data.attempts_remaining || (MAX_ATTEMPTS - apiKeyAttempts);
             
             if (attemptsRemaining <= 0) {
-                // Bloqueado por 20 segundos
+                //  Esta mensagem é da API. Se removida, você não será avisado caso ela bloqueie seu acesso.
                 isKeyBlocked = true;
                 blockTimer = Date.now() + 20000;
-                showError('🔒 Too many attempts. Blocked for 20 seconds.');
+                showError('Too many attempts. Blocked for 20 seconds.');
                 return false;
             }
             
-            showError(`❌ Invalid key. ${attemptsRemaining} attempts remaining.`);
+            showError(` Invalid key. ${attemptsRemaining} attempts remaining.`);
             return false;
         }
     } catch (error) {
@@ -190,11 +187,11 @@ async function verifyApiKey() {
         isApiKeyVerified = true;
         
         if (error.name === 'AbortError') {
-            showError('❌ Timeout - Server not responding.');
+            showError(' Timeout - Server not responding.');
         } else if (error.message === 'Invalid server response') {
-            showError('❌ Invalid server response.');
+            showError(' Invalid server response.');
         } else {
-            showError(`❌ Error: ${error.message}`);
+            showError(` Error: ${error.message}`);
         }
         return false;
     }
@@ -230,7 +227,7 @@ function showBlockedOverlay(seconds) {
             border: 2px solid #ef4444;
             box-shadow: 0 30px 80px rgba(0,0,0,0.5);
         ">
-            <div style="font-size: 64px; margin-bottom: 16px;">⛔</div>
+            <div style="font-size: 64px; margin-bottom: 16px;"></div>
             <h2 style="color: #ef4444; font-size: 24px; margin-bottom: 8px;">Rate Limit Exceeded</h2>
             <p style="color: var(--text-secondary, #6b6b6b); margin-bottom: 20px; font-size: 14px; line-height: 1.6;">
                 Too many invalid attempts.<br>
@@ -246,7 +243,7 @@ function showBlockedOverlay(seconds) {
     
     document.body.appendChild(overlay);
     
-    // Contador regressivo
+    
     let remaining = seconds;
     const countdown = setInterval(() => {
         remaining--;
@@ -263,7 +260,7 @@ function showBlockedOverlay(seconds) {
         }
     }, 1000);
     
-    // Auto-remove após o tempo
+    
     setTimeout(() => {
         if (overlay.parentNode) {
             overlay.remove();
@@ -968,14 +965,14 @@ function handleSSEMessage(event) {
         console.log('📨 Event received:', data.type);
         switch(data.type) {
             case 'info':
-                console.log('ℹ️ Info:', data.message);
+                console.log('Info:', data.message);
                 if (data.message && data.message.includes('Iniciando extração')) {
                     const { seconds, isLargeAccount } = calculateStageTime('verify', 0);
                     startTimerForStage('verify', seconds, isLargeAccount, 'Verifying user...');
                 }
                 break;
             case 'stats':
-                console.log('📊 Stats received!');
+                console.log('Stats received!');
                 if (totalFollowing) totalFollowing.textContent = data.total_following || 0;
                 if (totalFollowers) totalFollowers.textContent = data.total_followers || 0;
                 totalFollowersCount = data.total_followers || 0;
@@ -1037,12 +1034,12 @@ function handleSSEMessage(event) {
                         }
                     }
                     const progress = 80 + (totalItems / totalToShow) * 20;
-                    updateProgress(Math.min(progress, 98), `Downloading images... Batch ${data.batch_num}/${data.total_batches}`);
+                    updateProgress(Math.min(progress, 98), `preparing unfys... Batch ${data.batch_num}/${data.total_batches}`);
                     if (data.show_more && totalUnfollowers) {
                         totalUnfollowers.textContent = data.total_unfollowers || 0;
                     }
                     if (progressLabel) {
-                        progressLabel.textContent = `📥 ${data.total_downloaded} images downloaded | Batch ${data.batch_num}/${data.total_batches}`;
+                        progressLabel.textContent = `${data.total_downloaded} profiles displayed!| Batch ${data.batch_num}/${data.total_batches}`;
                     }
                     const { seconds: dSeconds, isLargeAccount: dLarge } = calculateStageTime('download', totalToShow);
                     startTimerForStage('download', dSeconds, dLarge, '👤 preparing profile...');
@@ -1079,14 +1076,14 @@ function handleSSEMessage(event) {
                 updateFilterVisibility();
                 break;
             case 'canceled':
-                console.log('⏹️ Canceled by user');
+                console.log('Canceled by user');
                 setStatus(STATUS_MESSAGES.canceled, false);
                 if (progressLabel) progressLabel.textContent = 'Aborted by user.';
                 stopSimpleTimer();
                 timerStarted = false;
                 enableButton();
                 isAnalyzing = false;
-                showNotification('⏹️ Analysis canceled by user', 'error');
+                showNotification('Analysis canceled by user', 'error');
                 setTimeout(() => {
                     if (progressContainer) progressContainer.classList.remove('active');
                 }, 1000);
