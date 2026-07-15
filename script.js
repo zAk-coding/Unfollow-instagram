@@ -6,7 +6,7 @@ const API_BASE_URL = 'https://graphic-possibility-purchased-stuart.trycloudflare
 // Não remova esta chave.
 // O projeto depende dela para funcionar.
 
-let API_KEY = 'zAk-aB3xK9mN2pQr5sT8vW1yZ4c';
+let API_KEY = 'zAk-8hJ3lN6pR9uX2zA4eG7kL5m';
 
 // ====================================================================
 
